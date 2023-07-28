@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+TARGET_PKG="@PROJECT_NAME@"
+TARGET_CAPS="@PROJECT_CAPS@"
+
+TARGET_EXECUTABLE=$(readlink -f `ros2 pkg prefix ${TARGET_PKG}`/lib/${TARGET_PKG}/${TARGET_PKG})
+
+echo "will set ${TARGET_CAPS} on ${TARGET_EXECUTABLE}"
+sudo setcap ${TARGET_CAPS} ${TARGET_EXECUTABLE}
+
+getcap ${TARGET_EXECUTABLE}

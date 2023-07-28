@@ -14,10 +14,17 @@ find_package(ament_cmake QUIET)
 # find_package(procps REQUIRED)
 # find_package(cap-ng REQUIRED)
 
-add_executable(${PROJECT_NAME} cap_grant_ld.c)
-target_link_libraries(${PROJECT_NAME} procps cap-ng)
-target_compile_features(${PROJECT_NAME} PUBLIC c_std_99)
+# build static library including main()
+add_library(lib${PROJECT_NAME} cap_grant_ld.c)
+target_link_libraries(lib${PROJECT_NAME} PUBLIC procps cap-ng)
+target_compile_features(lib${PROJECT_NAME} PUBLIC c_std_99)
+set_target_properties(lib${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 
+# build executable from empty file and static lib
+# file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/null.c "")
+add_executable(${PROJECT_NAME} /dev/null)
+target_link_libraries(${PROJECT_NAME} lib${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 
 # check for ROS2 / colcon build
 set(IS_COLCON_BUILD FALSE)
@@ -49,16 +56,28 @@ if(ament_cmake_FOUND AND IS_COLCON_BUILD)
   # colcon does not show STATUS messages; but serves as info if ROS build was NOT intended
   message(STATUS "building for ROS2 using ament_cmake")
 
+  # ## TESTING
+  # if(BUILD_TESTING)
+  #     # TODO
+  # endif()
+
   # INSTALL
   install(
     TARGETS ${PROJECT_NAME}
     DESTINATION lib/${PROJECT_NAME}
   )
 
-  # ## TESTING
-  # if(BUILD_TESTING)
-  #     # TODO
-  # endif()
+  install(
+    TARGETS lib${PROJECT_NAME}
+    EXPORT export_lib${PROJECT_NAME}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+  )
+
+  # export for use by ament packages
+  ament_export_targets(export_lib${PROJECT_NAME})
+  ament_export_libraries(lib${PROJECT_NAME})
+  ament_export_dependencies()
 
   ament_package()
 
