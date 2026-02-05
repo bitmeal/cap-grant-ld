@@ -26,7 +26,7 @@ target_link_libraries(${PROJECT_NAME} lib${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 
 # check for ROS2 / colcon build
-if((DEFINED ENV{COLCON} OR $ENV{_} MATCHES "colcon") AND $ENV{AMENT_PREFIX_PATH} MATCHES "ros")
+if((DEFINED ENV{COLCON} OR "$ENV{_}" MATCHES "colcon") AND "$ENV{AMENT_PREFIX_PATH}" MATCHES "ros")
   # colcon does not show STATUS messages; but serves as info if ROS build was NOT intended
   message(STATUS "building for ROS2 using ament_cmake")
 

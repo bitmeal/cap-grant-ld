@@ -66,7 +66,7 @@ executing: capsh --has-p=cap_net_raw
 ## building
 requirement:
 * `libcap-ng-dev`
-* `libprocps-dev`
+* `libprocps-dev` (Alpine: `procps-compat-dev`)
 
 ```bash
 # "raw"
